@@ -1,8 +1,9 @@
 from collections.abc import Callable
-from math import cos, exp2, log, sin
+from math import cos, exp2, isclose, log, sin
 
 
 # Заданная функция.
+# float в Python имеет точность double.
 def f(x: float) -> float:
     return exp2(-x) - sin(x)
 
@@ -48,7 +49,7 @@ def bisection(
     while abs(b - a) >= (2 * eps):
         c = (a + b) / 2
 
-        if (f(a) * f(c)) <= 0:
+        if f(a) * f(c) <= 0:
             b = c
         else:
             a = c
@@ -67,24 +68,24 @@ def newton(
     eps: float,
     max_iter: int,
 ) -> tuple[int, float | None]:
-    xn = x0
+    x_curr = x0
 
     # Метод Ньютона может не сойтись.
     # Используем ограничение на количество итераций.
-    for i in range(max_iter):
-        f_xn = f(xn)
-        df_xn = df(xn)
+    for i in range(1, max_iter + 1):
+        f_x_curr = f(x_curr)
+        df_x_curr = df(x_curr)
 
         # Метод не работает в случае значения нулю производной.
-        if df_xn == 0:
+        if isclose(df_x_curr, 0):
             return i, None
 
         # Вычисление и проверка приближенного значения корня.
-        xn_prev = xn
-        xn = xn - f_xn / df_xn
+        xn_prev = x_curr
+        x_curr = x_curr - f_x_curr / df_x_curr
 
-        if abs(xn - xn_prev) < eps:
-            return i, xn
+        if abs(x_curr - xn_prev) < eps:
+            return i, x_curr
 
     return max_iter, None
 
@@ -97,21 +98,53 @@ def modified_newton(
     eps: float,
     max_iter: int,
 ) -> tuple[int, float | None]:
-    xn = x0
+    x_curr = x0
 
     # Упрощение в единственном вычислении производной.
     df_x0 = df(x0)
 
-    if df_x0 == 0:
+    if isclose(df_x0, 0):
         return 0, None
 
+    for i in range(1, max_iter + 1):
+        f_x_curr = f(x_curr)
+
+        xn_prev = x_curr
+        x_curr = x_curr - f_x_curr / df_x0
+
+        if abs(x_curr - xn_prev) < eps:
+            return i, x_curr
+
+    return max_iter, None
+
+
+# Метод секущих приближения корня нелинейного уравнения.
+def secant(
+    f: Callable[[float], float],
+    x0: float,
+    x1: float,
+    eps: float,
+    max_iter: int,
+) -> tuple[int, float | None]:
+    x_prev = x0
+    x_curr = x1
+
+    # Метод секущих может не сойтись.
+    # Используем ограничение на количество итераций.
     for i in range(max_iter):
-        f_xn = f(xn)
+        f_x_prev = f(x_prev)
+        f_x_curr = f(x_curr)
+        df = (f_x_curr - f_x_prev) / (x_curr - x_prev)
 
-        xn_prev = xn
-        xn = xn - f_xn / df_x0
+        # Метод не работает в случае значения нулю приблежения производной.
+        if isclose(df, 0):
+            return i, None
 
-        if abs(xn - xn_prev) < eps:
-            return i, xn
+        # Вычисление и проверка приближенного значения корня.
+        x_prev = x_curr
+        x_curr = x_curr - f_x_curr / df
+
+        if abs(x_curr - x_prev) < eps:
+            return i, x_curr
 
     return max_iter, None
