@@ -131,7 +131,7 @@ def secant(
 
     # Метод секущих может не сойтись.
     # Используем ограничение на количество итераций.
-    for i in range(max_iter):
+    for i in range(1, max_iter + 1):
         f_x_prev = f(x_prev)
         f_x_curr = f(x_curr)
         df = (f_x_curr - f_x_prev) / (x_curr - x_prev)
