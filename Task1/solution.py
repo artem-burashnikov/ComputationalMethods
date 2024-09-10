@@ -134,11 +134,12 @@ def secant(
     for i in range(1, max_iter + 1):
         f_x_prev = f(x_prev)
         f_x_curr = f(x_curr)
-        df = (f_x_curr - f_x_prev) / (x_curr - x_prev)
 
         # Метод не работает в случае значения нулю приблежения производной.
-        if isclose(df, 0):
+        if isclose(x_curr - x_prev, 0):
             return i, None
+
+        df = (f_x_curr - f_x_prev) / (x_curr - x_prev)
 
         # Вычисление и проверка приближенного значения корня.
         x_prev = x_curr
