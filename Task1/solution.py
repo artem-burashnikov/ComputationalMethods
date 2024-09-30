@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from math import cos, exp2, isclose, log, sin
 
 
