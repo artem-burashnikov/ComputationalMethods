@@ -1,32 +1,34 @@
-from numpy import array, log, ndarray
+from numpy import array, log
 
-# Выбор узлов интерполирования зависит от того, где находится точка x_new.
-# Пусть h = (b - a) / n
-# 1) Если b - h/2 <= x_new < b, то узлы стоит выбирать в следующем порядке: b, b - h, b - 2h и т.д...
-# 2) Если x_k < x_new <= x_k + h/2, то узлы стоит выбирать такие: x_k, x_k - h, x_k + h, x_k - 2h, x_k + 2h и т.д...
 
-class LagrangePolyForm:
-    pass
-
-def f(x: ndarray):
-    if any(x <= -1):
-        print("Недопустимое для логарифма значение x")
-        return None
+# Тестовая функция
+def f(x):
     return log(1 + x)
 
 
+# Генерирует попарно различные узлы интерполирования в количестве node_count
 def generate_nodes(a: float, b: float, node_count: int):
     result = []
-    if node_count != 0:
+    if node_count > 0:
         for i in range(node_count):
             node = a + i * abs(b - a) / node_count
             result.append(node)
     return array(result)
 
 
-def find_closest_nodes():
-    pass
+# Сортирует список узлов по увеличению расстояния от точки x
+def sort_by_distance_to_x(x, x_arr):
+    result = [(i, x_arr[i]) for i in range(len(x_arr))]
+    return sorted(result, key=lambda xs: abs(xs[1] - x))
 
 
-def interpolation_poly():
-    pass
+# Вычисляет значения интерполяционного многочлена в форме Лагранжа в точке x
+def p(n, x, x_arr, fx_arr):
+    px = 0
+    for k in range(n + 1):
+        lmi = 1
+        for i in range(n + 1):
+            if i != k:
+                lmi *= (x - x_arr[i]) / (x_arr[k] - x_arr[i])
+        px += fx_arr[k] * lmi
+    return px

@@ -1,5 +1,5 @@
 import pandas as pd
-from solution import f, generate_nodes
+from solution import f, generate_nodes, p, sort_by_distance_to_x
 
 set_yes = {"yes", "да", "y"}
 
@@ -14,10 +14,15 @@ def main():
     b = float(input("Введите правую границу отрезка B: "))  # b = 1
 
     x_arr = generate_nodes(a, b, node_count)
+
+    if any(el <= -1 for el in x_arr):
+        print("Недопустимое значение узла для тестовой функции")
+        exit(1)
+
     fx_arr = f(x_arr)
     df = pd.DataFrame({"x": x_arr, "f(x)": fx_arr}).rename_axis("id", axis=1)
-    print("--------------------------------------------------------------------------")
     print(df.to_string())
+    print("--------------------------------------------------------------------------")
 
     while True:
         x = float(input("Введите точку интерполирования x: "))  # x = 0.35
@@ -25,19 +30,28 @@ def main():
         n = node_count
 
         while n >= node_count:
-            n = int(
-                input(
-                    f"Введите степень интерполяционного многочлена n <= {node_count - 1}: "
-                )
-            )  # n = 7
+            n = int(input(f"Введите степень интерполяционного многочлена n <= {node_count - 1}: "))  # n = 7
             if n >= node_count:
                 print(f"Введено недопустимое значение: {n}.")
 
-        # TODO closest_nodes = find_closest_nodes(x, x_arr, f, n)
+        closest_indexed_nodes = sort_by_distance_to_x(x, x_arr)[: (n + 1)]
 
-        # TODO p(x) = interpolation_poly(x, closest_nodes, f)
+        sliced_indecies = [x[0] for x in closest_indexed_nodes]
+        sliced_x_arr = [x[1] for x in closest_indexed_nodes]
+        sliced_fx_arr = [fx_arr[i] for i in sliced_indecies]
 
-        # TODO abs_tol = abs(f(x) - p(x))
+        df = pd.DataFrame({"id": sliced_indecies, "x": sliced_x_arr, "f(x)": sliced_fx_arr})
+        print(df.to_string(index=False))
+        print("--------------------------------------------------------------------------")
+
+        pnx = p(n, x, x_arr, fx_arr)
+        fx = f(x)
+        abs_tol = abs(fx - pnx)
+        print(f"Точка x: {x}")
+        print(f"Значение многочлена Лагранжа Pn(x): {pnx}")
+        print(f"Значение функции f(x): {fx}")
+        print(f"Абсолютная фактическая погрешность: {abs_tol}")
+        print("--------------------------------------------------------------------------")
 
         prompt = input("Завершить выполнение программы? [y/n]: ")
 
