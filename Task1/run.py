@@ -101,7 +101,7 @@ def main():
             if prompt.strip().lower() in set_no:
                 break
 
-        prompt = input("Хотите начать заново с выбора границ отрезка? [[y/n]: ")
+        prompt = input("Хотите начать заново с выбора границ отрезка? [y/n]: ")
         if prompt.strip().lower() in set_no:
             break
 
