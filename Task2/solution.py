@@ -11,7 +11,7 @@ def generate_nodes(a: float, b: float, node_count: int):
     result = []
     if node_count > 0:
         for i in range(node_count):
-            node = a + i * abs(b - a) / node_count
+            node = a + i * abs(b - a) / (node_count - 1)
             result.append(node)
     return array(result)
 

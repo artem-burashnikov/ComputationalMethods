@@ -8,6 +8,10 @@ set_no = {"no", "нет", "n"}
 
 def main():
     print("Задача алгебраического интерполирования. Вариант 2.")
+    print("Тестовая функция: log(1+x)")
+    print("Тестовый отрезок выбора узлов интерполирования: [0;1]")
+    print("Тестовое число узлов: 15")
+    print("Тестовая точка x: 0.35")
     print("--------------------------------------------------------------------------")
     node_count = int(input("Введите число значений в таблице (m+1): "))  # m = 15
     a = float(input("Введите левую границу отрезка A: "))  # a = 0
@@ -34,17 +38,20 @@ def main():
             if n >= node_count:
                 print(f"Введено недопустимое значение: {n}.")
 
-        closest_indexed_nodes = sort_by_distance_to_x(x, x_arr)[: (n + 1)]
+        closest_indexed_nodes = sort_by_distance_to_x(x, x_arr)
+        closest_indecies = [i[0] for i in closest_indexed_nodes]
+        closest_nodes = [x[1] for x in closest_indexed_nodes]
+        closest_values = [fx_arr[i] for i in closest_indecies]
 
-        sliced_indecies = [x[0] for x in closest_indexed_nodes]
-        sliced_x_arr = [x[1] for x in closest_indexed_nodes]
+        sliced_indecies = closest_indecies[: (n + 1)]
+        sliced_x_arr = closest_nodes[: (n + 1)]
         sliced_fx_arr = [fx_arr[i] for i in sliced_indecies]
 
         df = pd.DataFrame({"id": sliced_indecies, "x": sliced_x_arr, "f(x)": sliced_fx_arr})
         print(df.to_string(index=False))
         print("--------------------------------------------------------------------------")
 
-        pnx = p(n, x, x_arr, fx_arr)
+        pnx = p(n, x, closest_nodes, closest_values)
         fx = f(x)
         abs_tol = abs(fx - pnx)
         print(f"Точка x: {x}")
