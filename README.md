@@ -45,7 +45,5 @@ python3 Task*/run.py
 The project is licensed under a [MIT license][license-url].
 
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[license-shield]: https://img.shields.io/github/license/artem-burashnikov/ComputationalMethods.svg?style=for-the-badge&color=blue
+[license-shield]: https://img.shields.io/github/license/artem-burashnikov/ComputationalMethods?style=for-the-badge&color=blue
 [license-url]: LICENSE
-<!-- [status-shield]: https://img.shields.io/github/actions/workflow/status/artem-burashnikov/ComputationalMethods/.github/workflows/ci.yml?branch=main&event=push&style=for-the-badge
-[status-url]: https://github.com/artem-burashnikov/ComputationalMethods/blob/main/.github/workflows/ci.yml -->
